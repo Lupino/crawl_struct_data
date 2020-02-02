@@ -4,5 +4,5 @@ class TripleItem(Item):
     _filed = [
         {'name': 'entity', 'type': 'str'},
         {'name': 'attr',   'type': 'str'},
-        {'name': 'value',  'type': 'json'}, # use dyn type
+        {'name': 'value',  'type': 'str'},
     ]

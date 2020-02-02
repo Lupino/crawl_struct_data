@@ -1,1 +1,2 @@
-git+https://github.com/Lupino/grapy.git
+# git+https://github.com/Lupino/grapy.git
+grapy==0.1.9

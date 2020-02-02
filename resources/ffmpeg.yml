@@ -1,1 +1,8 @@
 spider: ffmpeg
+entity: ffmpeg
+static:
+  '首页': 'https://ffmpeg.org/'
+  'Git地址': ['https://git.ffmpeg.org/ffmpeg.git', 'https://git.ffmpeg.org/ffmpeg-web']
+dynamic:
+- url: 'https://ffmpeg.org/download.html'
+  parser: 'parse'

@@ -4,7 +4,7 @@ from grapy.sched import Scheduler
 from triple.utils import import_spiders
 import logging
 import yaml
-import asyncio
+from triple.pipelines import PrintTripleItem
 
 formatter = "[%(asctime)s] %(name)s {%(filename)s:%(lineno)d} %(levelname)s - %(message)s"
 logging.basicConfig(level=logging.DEBUG, format=formatter)
@@ -21,14 +21,6 @@ async def process_item(engine, spider_name, item):
     elif isinstance(item, Item):
         await engine.push_item(item)
 
-async def sched_check(engine):
-    while True:
-        await asyncio.sleep(1)
-        if not engine.sched.is_running:
-            break
-
-    engine.shutdown()
-
 def main(script, *args):
 
     spiders = import_spiders('triple')
@@ -36,6 +28,7 @@ def main(script, *args):
     sched = Scheduler()
     engine.set_sched(sched)
     engine.set_spiders(spiders)
+    engine.set_pipelines([PrintTripleItem()])
 
     for arg in args:
         with open(arg, 'r') as f:
@@ -44,7 +37,6 @@ def main(script, *args):
             items = spider.setup(config)
             engine.loop.create_task(process_items(engine, config['spider'], items))
 
-    engine.loop.create_task(sched_check(engine))
     engine.start()
 
 if __name__ == '__main__':
