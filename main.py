@@ -4,7 +4,8 @@ from grapy.sched import Scheduler
 from triple.utils import import_spiders
 import logging
 import yaml
-from triple.pipelines import PrintTripleItem
+from config import cayley_host
+from triple.pipelines import PrintTripleItem, SaveToCayley
 
 formatter = "[%(asctime)s] %(name)s {%(filename)s:%(lineno)d} %(levelname)s - %(message)s"
 logging.basicConfig(level=logging.DEBUG, format=formatter)
@@ -28,7 +29,7 @@ def main(script, *args):
     sched = Scheduler()
     engine.set_sched(sched)
     engine.set_spiders(spiders)
-    engine.set_pipelines([PrintTripleItem()])
+    engine.set_pipelines([SaveToCayley(cayley_host), PrintTripleItem()])
 
     for arg in args:
         with open(arg, 'r') as f:

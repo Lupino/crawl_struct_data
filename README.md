@@ -11,6 +11,8 @@ pip install -r requirements.txt
 ## 运行
 
 ```
+cayley -d bolt -a data http --init
+
 python main.py resources/ffmpeg.yml
 ```
 
