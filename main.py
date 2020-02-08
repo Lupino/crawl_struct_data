@@ -15,6 +15,8 @@ async def process_items(engine, spider_name, items):
     for item in items:
         await process_item(engine, spider_name, item)
 
+    engine.sched.auto_shutdown = True
+
 async def process_item(engine, spider_name, item):
     if isinstance(item, BaseRequest):
         item.spider = spider_name
@@ -26,7 +28,7 @@ def main(script, *args):
 
     spiders = import_spiders('triple')
 
-    sched = Scheduler()
+    sched = Scheduler(auto_shutdown=False)
     engine.set_sched(sched)
     engine.set_spiders(spiders)
     engine.set_pipelines([SaveToCayley(cayley_host), PrintTripleItem()])

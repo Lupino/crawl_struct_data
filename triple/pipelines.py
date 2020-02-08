@@ -21,21 +21,15 @@ class SaveToCayley(object):
             "object": item.value,
             # "label": item.label,
         }])
-        print(data)
         headers = { "Content-Type": "application/json" }
         url = '{}/api/v1/write'.format(self._host)
-        rsp = requests.post(url, data=data, headers=headers)
-        # try:
-        #     async with aiohttp.ClientSession() as client:
-        #         async with client.post(url, data=data, headers=headers) as rsp:
-        #             content = await rsp.read()
-        #             logger.info(content)
-        # except Exception as e:
-        #     logger.exception(e)
-        data = rsp.json()
-        if data.get('result'):
-            logger.info(data['result'])
-        if data.get('error'):
-            logger.error(data['error'])
+        async with aiohttp.ClientSession() as client:
+            async with client.post(url, data=data, headers=headers) as rsp:
+                content = await rsp.read()
+                data = json.loads(str(content, 'utf-8'))
+                if data.get('result'):
+                    logger.info(data['result'])
+                if data.get('error'):
+                    logger.error(data['error'])
 
         return item
