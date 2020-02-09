@@ -181,4 +181,4 @@ class GithubSpider(BaseSpider):
                 lang = k
 
         await next(tripleItem(entity, 'main_language', lang))
-        await next(tripleItem(entity, 'code', sum['code']))
+        await next(tripleItem(entity, 'code', str(sum['code'])))
