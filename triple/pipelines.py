@@ -5,10 +5,13 @@ import requests
 
 logger = logging.getLogger('pipelines')
 
+
 class PrintTripleItem(object):
     def process(self, item):
-        logger.info('"{}" "{}" "{}"'.format(item.entity, item.attr, item.value))
+        logger.info('"{}" "{}" "{}"'.format(item.entity, item.attr,
+                                            item.value))
         return item
+
 
 class SaveToCayley(object):
     def __init__(self, host):
@@ -21,7 +24,7 @@ class SaveToCayley(object):
             "object": item.value,
             # "label": item.label,
         }])
-        headers = { "Content-Type": "application/json" }
+        headers = {"Content-Type": "application/json"}
         url = '{}/api/v1/write'.format(self._host)
         async with aiohttp.ClientSession() as client:
             async with client.post(url, data=data, headers=headers) as rsp:

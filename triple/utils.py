@@ -7,6 +7,7 @@ root_path = os.path.dirname(__file__)
 
 spider_path = os.path.join(root_path, 'spiders')
 
+
 def import_spiders(project_name):
     spiders = []
 

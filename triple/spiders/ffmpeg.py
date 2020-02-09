@@ -2,7 +2,9 @@ from grapy import BaseSpider, Request
 from ..items import TripleItem
 import re
 
-re_release = re.compile('https://ffmpeg.org/releases/ffmpeg-(\d+.\d+.\d+).tar.bz2')
+re_release = re.compile(
+    'https://ffmpeg.org/releases/ffmpeg-(\d+.\d+.\d+).tar.bz2')
+
 
 class FfmpegSpider(BaseSpider):
     name = "ffmpeg"
@@ -23,7 +25,7 @@ class FfmpegSpider(BaseSpider):
         for req in config['dynamic']:
             url = req.pop('url')
             parser = req.pop('parser')
-            yield Request(url, callback=parser, callback_args = [entity])
+            yield Request(url, callback=parser, callback_args=[entity])
 
     def parse(self, rsp, entity):
         triple = TripleItem()
