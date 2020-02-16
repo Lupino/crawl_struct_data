@@ -1,7 +1,6 @@
 import logging
 import aiohttp
 import json
-import requests
 
 logger = logging.getLogger('pipelines')
 
@@ -20,7 +19,7 @@ class SaveToCayley(object):
     async def process(self, item):
         data = json.dumps([{
             "subject": item.entity,
-            "predicate": item.attr,
+            "predicate": '<' + item.attr + '>',
             "object": item.value,
             # "label": item.label,
         }])
