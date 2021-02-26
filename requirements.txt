@@ -1,5 +1,5 @@
 # git+https://github.com/Lupino/grapy.git
 grapy==0.1.10
-aiohttp==3.6.2
+aiohttp==3.7.4
 jieba
 pyahocorasick
