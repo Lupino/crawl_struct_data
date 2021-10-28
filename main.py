@@ -1,19 +1,26 @@
 from grapy import engine
 from grapy.core import BaseRequest, Item
 from grapy.sched import Scheduler
-from triple.utils import import_spiders
+from grapy.utils import import_spiders
 import logging
 import yaml
 from config import cayley_host
 from triple.pipelines import PrintTripleItem, SaveToCayley
+import asyncio
+import os.path
 
-formatter = "[%(asctime)s] %(name)s {%(filename)s:%(lineno)d} %(levelname)s - %(message)s"
+root_path = os.path.dirname(__file__)
+
+spider_path = os.path.join(root_path, 'triple', 'spiders')
+
+formatter = "[%(asctime)s] %(name)s:%(lineno)d %(levelname)s - %(message)s"
 logging.basicConfig(level=logging.DEBUG, format=formatter)
 
 
 async def process_items(engine, spider_name, items):
     for item in items:
         await process_item(engine, spider_name, item)
+
 
 async def process_item(engine, spider_name, item):
     if isinstance(item, BaseRequest):
@@ -22,11 +29,14 @@ async def process_item(engine, spider_name, item):
     elif isinstance(item, Item):
         await engine.push_item(item)
 
-def main(script, *args):
 
-    spiders = import_spiders('triple')
+async def main(script, *args):
+    spiders = import_spiders(spider_path, module_prefix='triple.spiders.')
+    if len(spiders) == 0:
+        logging.error('Spiders not founds')
+        return
 
-    sched = Scheduler(auto_shutdown=True)
+    sched = Scheduler(size=20)
     engine.set_sched(sched)
     engine.set_spiders(spiders)
     engine.set_pipelines([SaveToCayley(cayley_host), PrintTripleItem()])
@@ -36,10 +46,12 @@ def main(script, *args):
             config = yaml.load(f, Loader=yaml.SafeLoader)
             spider = engine.get_spider(config['spider'])
             items = spider.setup(config)
-            engine.loop.create_task(process_items(engine, config['spider'], items))
+            await process_items(engine, config['spider'], items)
 
-    engine.start()
+    await engine.start()
+    await sched.join()
+
 
 if __name__ == '__main__':
     import sys
-    main(*sys.argv)
+    asyncio.run(main(*sys.argv))
